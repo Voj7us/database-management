@@ -45,14 +45,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $columns = $_POST['columns'];
         $types = $_POST['types'];
         $values = $_POST['values'];
-        // Sprawdź, czy liczba kolumn i typów jest taka sama
+       
         if (count($columns) == count($types)) {
-            // Tworzenie zapytania SQL do utworzenia tabeli
+           
             $sql = "CREATE TABLE $tableName (";
             for ($i = 0; $i < count($columns); $i++) {
                 $columnName = $columns[$i];
                 $columnType = $types[$i];
-                $TypeValues = isset($values[$i]) ? $values[$i] : ""; // Sprawdzenie, czy wartość istnieje
+                $TypeValues = isset($values[$i]) ? $values[$i] : ""; 
             
                 $sql .= "$columnName $columnType";
                 if (!empty($TypeValues)) {
@@ -72,7 +72,7 @@ if ($query) {
 }
 
         } else {
-            echo "Liczba kolumn i typów nie jest zgodna!";
+            echo "";
         }
 
         $conn->close();

@@ -12,10 +12,9 @@
     }
     </style>
 </head>
+
 <body>
-
-<form action="create.php" method="post">
-
+    <form action="insert.php" method="post">
         Table name: <input type="text" name="tName" id="tName" oninput="addButton()" required><br>
         <input type="button" id="add" onclick="addCell()" value="Add collumn">
         <div id="newInput"></div>
@@ -43,52 +42,50 @@
         }
     }
     </script>
-   
-
-
-   <?php
-
-    $databaseName = $_GET['database'];
-    $conn = new mysqli("localhost", "root", "", $databaseName) or die("error");
-    $tableName = $_POST['tName'];
-    $columns = $_POST['columns'];
-    $types = $_POST['types'];
-    $values = $_POST['values'];
-    $primarykey = $_POST['pk'];
-    if (count($columns) == count($types)) {
-        // Tworzenie zapytania SQL do utworzenia tabeli
-        $sql = "CREATE TABLE $tableName (";
-        for ($i = 0; $i < count($columns); $i++) {
-            $columnName = $columns[$i];
-            $columnType = $types[$i];
-            $pk = $primarykey[$i];
-            $TypeValues = isset($values[$i]) ? $values[$i] : ""; // Sprawdzenie, czy wartość istnieje
-        
-            $sql .= "$columnName $columnType ";
-            if (!empty($TypeValues)) {
-                $sql .= "($TypeValues)";
+    <?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['tName'], $_POST['columns'], $_POST['types'])) {
+        $conn = new mysqli("localhost", "root", "", "test") or die("error");
+        $tableName = $_POST['tName'];
+        $columns = $_POST['columns'];
+        $types = $_POST['types'];
+        $values = $_POST['values'];
+        $primarykey = $_POST['pk'];
+        if (count($columns) == count($types)) {
+            // Tworzenie zapytania SQL do utworzenia tabeli
+            $sql = "CREATE TABLE $tableName (";
+            for ($i = 0; $i < count($columns); $i++) {
+                $columnName = $columns[$i];
+                $columnType = $types[$i];
+                $pk = $primarykey[$i];
+                $TypeValues = isset($values[$i]) ? $values[$i] : ""; // Sprawdzenie, czy wartość istnieje
+            
+                $sql .= "$columnName $columnType ";
+                if (!empty($TypeValues)) {
+                    $sql .= "($TypeValues)";
+                }
+                if ($i < count($columns) - 1) {
+                    $sql .= ", ";
+                }
+                $sql .= " ". $pk;
             }
-            if ($i < count($columns) - 1) {
-                $sql .= ", ";
-            }
-            $sql .= " ". $pk;
-        }
-        $sql .= ");";
+            $sql .= ");";
 
-        $query = mysqli_query($conn, $sql);
-        if ($query) {
-            header("Location: tables.php?database=".urlencode($databaseName)."&info=Table%20created");
+$query = mysqli_query($conn, $sql);
+if ($query) {
+    echo "Table created successfully";
+} else {
+    echo "Something went wrong";
+}
+
         } else {
-            header("Location: tables.php?database=".urlencode($databaseName)."&info=Something%20went%20wrong");
+            echo "Liczba kolumn i typów nie jest zgodna!";
         }
-    } else {
-        echo "Liczba kolumn i typów nie jest zgodna!";
+
+        $conn->close();
     }
-
-    $conn->close();
-
+}
 ?>
-
 
 </body>
 

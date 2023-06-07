@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zarządanie bazą danych</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="ajax.js"></script> 
+  
 </head>
 <body>
 
@@ -15,18 +15,23 @@
     </header>
 
     <main>
+<?php 
+$conn = new mysqli("localhost", "root", "") or die("error");
+$sql = "SHOW DATABASES";
+$query = mysqli_query($conn, $sql);
 
-        <div class="controls">
-       <a href="create.php"> <button name="controls" type="radio" id="create">Create</button></a>
-        Insert<input name="controls" type="radio" id="insert">
-        Update<input name="controls" type="radio" id="update">
-        Select<input name="controls" type="radio" id="select">
-        </div>
-        <div class="change"></div>
+if (mysqli_num_rows($query) > 0) {
+    while ($row = mysqli_fetch_assoc($query)) {
+        $databaseName = $row['Database'];
+        echo "<a href='tables.php?database=".$databaseName."'>".$databaseName."</a><br>";
+    }
+} else {
+    echo "You don't have any database";
+}
 
 
-    </main>
-
-
+?>
+ 
+</main>
 </body>
 </html>
